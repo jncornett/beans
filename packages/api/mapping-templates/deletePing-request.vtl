@@ -1,0 +1,15 @@
+{
+  "version" : "2017-02-28",
+  "operation" : "DeleteItem",
+  "key": {
+    "id": { "S" : "${context.arguments.id}" }
+  }
+  #if( $context.arguments.containsKey("expectedRev") )
+    ,"condition" : {
+      "expression": "attribute_not_exists(id) OR rev = :expectedRev",
+      "expressionValues" : {
+        ":expectedRev": { "S": "${context.arguments.expectedRev}" }
+      }
+    }
+  #end
+}

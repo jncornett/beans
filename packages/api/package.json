@@ -1,0 +1,46 @@
+{
+  "name": "@beans/api",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "env SLS_DEBUG=* NODE_DEBUG=appsync-* serverless offline start",
+    "test": "jest"
+  },
+  "private": true,
+  "devDependencies": {
+    "@babel/core": "^7.7.5",
+    "@babel/preset-env": "^7.7.6",
+    "@babel/preset-typescript": "^7.7.4",
+    "@conduitvc/appsync-emulator-serverless": "^0.14.5",
+    "@conduitvc/dynamodb-emulator": "^0.5.3",
+    "@typescript-eslint/eslint-plugin": "^2.11.0",
+    "@typescript-eslint/parser": "^2.11.0",
+    "babel-loader": "^8.0.6",
+    "dotenv-webpack": "^1.7.0",
+    "eslint": "^6.7.2",
+    "eslint-config-prettier": "^6.7.0",
+    "eslint-plugin-jest": "^23.1.1",
+    "fork-ts-checker-webpack-plugin": "^3.1.1",
+    "jest": "^24.9.0",
+    "prettier": "^1.19.1",
+    "serverless": "^1.59.3",
+    "serverless-appsync-offline": "^1.4.0",
+    "serverless-appsync-plugin": "^1.1.2",
+    "serverless-dotenv": "^1.0.0-beta.2",
+    "serverless-dotenv-plugin": "^2.1.1",
+    "serverless-offline": "^5.12.1",
+    "serverless-offline-step-functions": "^1.2.6",
+    "serverless-step-functions": "^2.12.0",
+    "serverless-step-functions-offline": "^2.1.4",
+    "serverless-webpack": "^5.3.1",
+    "ts-jest": "^24.2.0",
+    "typescript": "^3.7.3",
+    "webpack": "^4.41.2",
+    "webpack-node-externals": "^1.7.2"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.26",
+    "@fortawesome/free-solid-svg-icons": "^5.12.0",
+    "@fortawesome/react-fontawesome": "^0.1.8",
+    "aws-sdk": "^2.587.0"
+  }
+}

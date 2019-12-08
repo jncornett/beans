@@ -1,0 +1,18 @@
+{
+  "version" : "2018-05-29",
+  "operation" : "UpdateItem",
+  "key": { "id": { "S": "$context.arguments.id" } },
+  "update" : {
+    "expression" : "SET name = :name, rev = :rev",
+    "expressionValues" : {
+      ":name": { "S": "$context.arguments.name" },
+      ":rev": { "S": "$util.autoId()" }
+    }
+  },
+  "condition" : {
+    "expression": "attribute_exists(id) AND rev = :expectedRev",
+    "expressionValues": {
+      ":expectedRev": { "S": "$context.arguments.rev" }
+    }
+  }
+}
