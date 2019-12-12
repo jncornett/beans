@@ -1,0 +1,16 @@
+{
+  "schema": {
+    "@beans/schema": {
+      "loader": "./scripts/codegen-resolve-loader.js"
+    }
+  },
+  "generates": {
+    "./src/graphql/__generated__/schema.tsx": {
+      "documents": "./src/graphql/queries/**",
+      "plugins": ["typescript", "typescript-operations", "typescript-react-apollo"],
+      "config": {
+        "withHooks": true
+      }
+    }
+  }
+}

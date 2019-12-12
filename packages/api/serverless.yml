@@ -32,6 +32,8 @@ custom:
         # port: ${env:DYNAMODB_LOCAL_PORT}
         port: 9004
   appSync:
+    name: ${self:service}-api
+    schema: ./__generated__/schema.graphql
     authenticationType: API_KEY
     # userPoolConfig:
     #   defaultAction: DENY # required # ALLOW or DENY
@@ -44,32 +46,58 @@ custom:
         field: listPings
         request: listPings-request.vtl
         response: listPings-response.vtl
-      - dataSource: Pings
-        type: Query
-        field: getPing
-        request: getPing-request.vtl
-        response: getPing-response.vtl
+      # - dataSource: Pings
+      #   type: Query
+      #   field: getPing
+      #   request: getPing-request.vtl
+      #   response: getPing-response.vtl
       - dataSource: Pings
         type: Mutation
         field: createPing
         request: createPing-request.vtl
         response: createPing-response.vtl
+      # - dataSource: Pings
+      #   type: Mutation
+      #   field: updatePing
+      #   request: updatePing-request.vtl
+      #   response: updatePing-response.vtl
+      # - dataSource: Pings
+      #   type: Mutation
+      #   field: deletePing
+      #   request: deletePing-request.vtl
+      #   response: deletePing-response.vtl
       - dataSource: Pings
+        type: Query
+        field: listPings
+        request: listPings-request.vtl
+        response: listPings-response.vtl
+      - dataSource: Genomes
+        type: Query
+        field: genomes
+        request: genomes-request.vtl
+        response: genomes-response.vtl
+      - dataSource: Genomes
+        type: Query
+        field: genome
+        request: genome-request.vtl
+        response: genome-response.vtl
+      - dataSource: Genomes
         type: Mutation
-        field: updatePing
-        request: updatePing-request.vtl
-        response: updatePing-response.vtl
-      - dataSource: Pings
-        type: Mutation
-        field: deletePing
-        request: deletePing-request.vtl
-        response: deletePing-response.vtl
+        field: addGenome
+        request: addGenome-request.vtl
+        response: addGenome-response.vtl
     dataSources:
       - type: AMAZON_DYNAMODB
         name: Pings
         description: "Pings table"
         config:
           tableName: PingsTable
+          serviceRoleArn: !GetAtt AppSyncDynamoDBServiceRole.Arn
+      - type: AMAZON_DYNAMODB
+        name: Genomes
+        description: "Genomes"
+        config:
+          tabelName: ${self:service}-genomes
           serviceRoleArn: !GetAtt AppSyncDynamoDBServiceRole.Arn
 
 functions:
@@ -108,11 +136,21 @@ resources:
             AttributeType: S
         BillingMode: PAY_PER_REQUEST
 
+    GenomesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:service}-genomes
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        BillingMode: PAY_PER_REQUEST
+
     AppSyncDynamoDBServiceRole:
       Type: AWS::IAM::Role
       Properties:
-        Description: |
-          Service role to allow AppSync to use DynamoDB tables
         AssumeRolePolicyDocument:
           Version: "2012-10-17"
           Statement:

@@ -1,4 +1,4 @@
-import ApolloClient from "apollo-boost";
+import ApolloClient, { InMemoryCache } from "apollo-boost";
 
 export default new ApolloClient({
   // TODO replace with process.env.API_ENDPOINT
@@ -7,4 +7,5 @@ export default new ApolloClient({
     // TODO replace with process.env.API_KEY
     "x-api-key": process.env.API_KEY,
   },
+  cache: new InMemoryCache(),
 });

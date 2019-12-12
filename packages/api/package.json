@@ -2,8 +2,11 @@
   "name": "@beans/api",
   "version": "1.0.0",
   "scripts": {
+    "install-schema": "node ./scripts/copy-to-local @beans/schema ./__generated__",
+    "generate": "node",
     "start": "env SLS_DEBUG=* NODE_DEBUG=appsync-* serverless offline start",
-    "test": "jest"
+    "test": "jest",
+    "prepare": "pnpm run install-schema"
   },
   "private": true,
   "devDependencies": {
@@ -38,6 +41,7 @@
     "webpack-node-externals": "^1.7.2"
   },
   "dependencies": {
+    "@beans/schema": "workspace:*",
     "@fortawesome/fontawesome-svg-core": "^1.2.26",
     "@fortawesome/free-solid-svg-icons": "^5.12.0",
     "@fortawesome/react-fontawesome": "^0.1.8",

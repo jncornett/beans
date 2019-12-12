@@ -2,12 +2,12 @@
   "version" : "2017-02-28",
   "operation" : "PutItem",
   "key" : {
-    "id": { "S": "$util.autoId()" }
+    "id": { "S": "${util.autoId()}" }
   },
   "attributeValues" : {
     "name": { "S": "${context.arguments.name}" },
-    "rev": { "S": "$util.autoId()" },
-    "created_at": { "S" : "$util.time.nowISO8601()" }
+    "rev": { "S": "${util.autoId()}" },
+    "created_at": { "S" : "${util.time.nowISO8601()}" }
   },
   "condition": {
     "expression": "attribute_not_exists(id)"

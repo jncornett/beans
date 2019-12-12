@@ -1,0 +1,12 @@
+{
+  "name": "@beans/schema",
+  "version": "1.0.0",
+  "files": [
+    "schema.graphql"
+  ],
+  "main": "./schema.graphql",
+  "private": true,
+  "devDependencies": {
+    "prettier": "^1.19.1"
+  }
+}

@@ -1,0 +1,13 @@
+query Genomes($nextToken: ID, $count: Int) {
+  genomes(nextToken: $nextToken, count: $count) {
+    items {
+      id
+      createdAt
+      code {
+        version
+        data
+      }
+    }
+    nextToken
+  }
+}

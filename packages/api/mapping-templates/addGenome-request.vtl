@@ -1,0 +1,27 @@
+{
+    "version" : "2017-02-28",
+    "operation" : "PutItem",
+    "key" : {
+        "id": {
+            "S": "${util.autoId()}"
+        }
+    },
+    "attributeValues" : {
+        "createdAt": {
+            "S": "${util.time.nowISO8601()}"
+        },
+        "code": {
+            "M": {
+                "version": {
+                    "S": "${context.arguments.code.version}"
+                },
+                "data": {
+                    "S": "${context.arguments.code.data}"
+                }
+            }
+        }
+    },
+    "condition": {
+        "expression": "attribute_not_exists(id)"
+    }
+}

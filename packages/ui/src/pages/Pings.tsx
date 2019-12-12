@@ -12,11 +12,11 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Spinner from "react-bootstrap/Spinner";
 import useForm from "react-hook-form";
-import { Link, NavLink, Route, Switch } from "react-router-dom";
+import { Link, NavLink, Route, Switch, useHistory } from "react-router-dom";
 import { useUID } from "react-uid";
 
 const LIST_PINGS_QUERY = gql`
-  query {
+  query ListPings {
     listPings {
       items {
         id
@@ -39,6 +39,10 @@ const CREATE_PING_QUERY = gql`
     }
   }
 `;
+
+type CreatePingQuery = {
+  createPing: { id: string; name: string };
+};
 
 type CreatePingVariables = {
   name: string;
@@ -64,14 +68,38 @@ const ErrorAlert = ({ error }: { error: ApolloError }): JSX.Element => {
 };
 
 const CreatePingForm = (): JSX.Element => {
-  const [mutate, { loading, error }] = useMutation<{}, CreatePingVariables>(CREATE_PING_QUERY);
+  const history = useHistory();
+  const [mutate, { loading, error }] = useMutation<CreatePingQuery, CreatePingVariables>(
+    CREATE_PING_QUERY,
+    {
+      update(cache, { data }) {
+        console.log(data);
+        if (data?.createPing) {
+          try {
+            const result = cache.readQuery<ListPingsQuery>({ query: LIST_PINGS_QUERY });
+            if (result) {
+              cache.writeQuery<ListPingsQuery, {}>({
+                query: LIST_PINGS_QUERY,
+                data: {
+                  listPings: {
+                    ...result.listPings,
+                    items: [...result.listPings.items, data.createPing],
+                  },
+                },
+              });
+            }
+          } catch (err) {}
+        }
+      },
+    },
+  );
   const { register, handleSubmit, errors } = useForm<CreatePingVariables>({ mode: "onBlur" });
   const nameId = useUID();
   const onSubmit = async (variables: CreatePingVariables): Promise<void> => {
     if (loading) {
       return;
     }
-    mutate({ variables });
+    await mutate({ variables }).then(() => history.goBack());
   };
   return (
     <>
@@ -122,6 +150,10 @@ const CreatePingForm = (): JSX.Element => {
   );
 };
 
+const PingDetail = ({ ping }): JSX.Element => {
+  return <pre>{JSON.stringify(ping, null, 2)}</pre>;
+};
+
 const PingsList = (): JSX.Element => {
   const { loading, error, data } = useQuery<ListPingsQuery>(LIST_PINGS_QUERY, {
     pollInterval: 10000,
@@ -137,7 +169,12 @@ const PingsList = (): JSX.Element => {
         </>
       )}
       {error && <ErrorAlert error={error} />}
-      {data && data?.listPings.items.map(({ id, name }) => <pre key={id}>{name}</pre>)}
+      {data &&
+        data?.listPings.items.map(({ id, name }) => (
+          <pre key={id}>
+            {id}: {name}
+          </pre>
+        ))}
       {data?.listPings.items.length === 0 && !error && (
         <Alert variant="secondary">No items to display</Alert>
       )}
@@ -183,7 +220,11 @@ export default function Pings(): JSX.Element {
             <Route path="/pings/create" exact>
               <CreatePingForm />
             </Route>
-            <Route path="/pings/:id" exact></Route>
+            <Route path="/pings/:id" exact>
+              <Route path="/pings/:id">
+                {({ match }) => <Breadcrumb.Item active>{match?.params.id}</Breadcrumb.Item>}
+              </Route>
+            </Route>
           </Switch>
         </Col>
       </Row>

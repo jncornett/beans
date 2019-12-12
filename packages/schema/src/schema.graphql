@@ -1,0 +1,109 @@
+type Mutation {
+  createPing(name: String!): Ping!
+  updatePing(id: ID!, name: String!, rev: String!): Ping!
+  deletePing(id: ID!, rev: String): Ping
+  addGenome(code: CodeInput!): Genome!
+}
+
+input CodeInput {
+  version: String!
+  data: String!
+}
+
+type Query {
+  listPings(nextToken: String): PingsPage
+  getPing(id: ID!): Ping
+  genomes(nextToken: ID, count: Int): GenomePage!
+  genome(id: ID): Genome
+}
+
+type PingsPage {
+  items: [Ping!]!
+  nextToken: String
+}
+
+type Ping {
+  id: ID!
+  rev: ID!
+  name: String!
+}
+
+interface Record {
+  id: ID!
+  createdAt: String!
+}
+
+interface MutableRecord {
+  id: ID!
+  rev: ID!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Code {
+  version: ID!
+  data: String!
+}
+
+type Genome implements Record {
+  id: ID!
+  createdAt: String!
+  code: Code!
+}
+
+type GenomePage {
+  items: [Genome!]!
+  nextToken: ID
+}
+
+type Position {
+  X: Int!
+  Y: Int!
+  Theta: Float!
+}
+
+type Creature implements MutableRecord {
+  id: ID!
+  rev: ID!
+  createdAt: String!
+  updatedAt: String!
+  genome: Genome!
+  position: Position!
+  energy: Int!
+}
+
+type CreaturePage {
+  items: [Creature!]!
+  nextToken: ID
+}
+
+type World implements MutableRecord {
+  id: ID!
+  rev: ID!
+  createdAt: String!
+  updatedAt: String!
+  creatures: [Creature!]!
+}
+
+type WorldPage {
+  items: [World!]!
+  nextToken: ID
+}
+
+type Simulation implements MutableRecord {
+  id: ID!
+  rev: ID!
+  createdAt: String!
+  updatedAt: String!
+  world: World!
+}
+
+type SimulationPage {
+  items: [Simulation!]!
+  nextToken: ID
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+}
